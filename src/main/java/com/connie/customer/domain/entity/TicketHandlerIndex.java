@@ -1,6 +1,7 @@
 package com.connie.customer.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,9 @@ public class TicketHandlerIndex {
     @PrimaryKeyJoinColumn
     private TicketHandler handler;
 
+    @Builder
+    public TicketHandlerIndex(Long id, TicketHandler handler) {
+        this.id = id;
+        this.handler = handler;
+    }
 }
