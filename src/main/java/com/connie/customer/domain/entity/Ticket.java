@@ -8,8 +8,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import static com.connie.customer.domain.enums.TicketStatus.CREATED;
+import static com.connie.customer.domain.enums.TicketType.GENERAL_INQUIRY;
+import static com.connie.customer.domain.enums.TicketType.PROBLEM_INQUIRY;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -60,6 +63,9 @@ public class Ticket extends BaseTimeEntity {
     }
 
     public static Ticket from(CreateTicketRequest request) {
+        checkType(request);
+        checkGeneralTypeField(request);
+        checkProblemTypeField(request);
         return Ticket.builder()
                 .userId(request.userId())
                 .title(request.title())
@@ -69,5 +75,35 @@ public class Ticket extends BaseTimeEntity {
                 .type(request.type())
                 .status(CREATED)
                 .build();
+    }
+
+    private static void checkType(CreateTicketRequest request) {
+        if (!hasDefaultField(request)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static boolean hasDefaultField(CreateTicketRequest request) {
+        return request.title() != null
+                && request.contents() != null
+                && request.email() != null;
+    }
+
+    private static void checkProblemTypeField(CreateTicketRequest request) {
+        if (PROBLEM_INQUIRY.equals(request.type())) {
+            throw new IllegalArgumentException("문제점 문의 타입이 아닙니다.");
+        }
+        if (StringUtils.hasText(request.phoneNumber()) && request.userId() != null) {
+            throw new IllegalArgumentException("문제점 문의 타입의 필수값이 없습니다.");
+        }
+    }
+
+    private static void checkGeneralTypeField(CreateTicketRequest request) {
+        if (GENERAL_INQUIRY.equals(request.type())) {
+            throw new IllegalArgumentException("일반 문의 타입이 아닙니다.");
+        }
+        if (request.userId() != null) {
+            throw new IllegalArgumentException("일반 문의 타입의 필수값이 없습니다.");
+        }
     }
 }
