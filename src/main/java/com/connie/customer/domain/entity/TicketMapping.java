@@ -23,7 +23,7 @@ public class TicketMapping extends BaseTimeEntity {
     @ManyToOne(cascade = ALL, fetch = LAZY)
     private TicketHandler handlerId;
 
-    @Column(nullable = false, unique = true)
+    @PrimaryKeyJoinColumn
     @OneToOne(cascade = ALL, fetch = LAZY)
     private Ticket ticketId;
 
