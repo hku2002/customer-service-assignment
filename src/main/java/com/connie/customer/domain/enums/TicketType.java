@@ -3,7 +3,7 @@ package com.connie.customer.domain.enums;
 import lombok.Getter;
 
 @Getter
-public enum TicketStatus {
+public enum TicketType {
 
     PROBLEM_INQUIRY("문제점 문의"),
     GENERAL_INQUIRY("일반 문의"),
@@ -11,7 +11,7 @@ public enum TicketStatus {
 
     private final String description;
 
-    TicketStatus(String description) {
+    TicketType(String description) {
         this.description = description;
     }
 }

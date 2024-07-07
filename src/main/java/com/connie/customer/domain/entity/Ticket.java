@@ -1,7 +1,7 @@
 package com.connie.customer.domain.entity;
 
 import com.connie.customer.common.entity.BaseTimeEntity;
-import com.connie.customer.domain.enums.TicketStatus;
+import com.connie.customer.domain.enums.TicketType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +37,6 @@ public class Ticket extends BaseTimeEntity {
 
     @Enumerated(STRING)
     @Column(nullable = false, length = 50)
-    private TicketStatus status;
+    private TicketType type;
 
 }
