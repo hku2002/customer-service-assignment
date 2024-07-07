@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.connie.customer.domain.enums.TicketType.PROBLEM_INQUIRY;
+
 @Service
 @RequiredArgsConstructor
 public class TicketService {
@@ -31,8 +33,13 @@ public class TicketService {
     }
 
     private void assignmentTicket(Ticket ticket) {
-        TicketHandler minTicketHandler = ticketHandlerRepository.findFirstHandlerHasMinTicket();
-        ticketMappingRepository.save(TicketMapping.of(minTicketHandler, ticket));
+        if (PROBLEM_INQUIRY.equals(ticket.getType())) {
+            TicketHandler minTicketHandler = ticketHandlerRepository.findFirstHandlerHasMinTicket();
+            ticketMappingRepository.save(TicketMapping.of(minTicketHandler, ticket));
+            return;
+        }
+
+        // TODO 라운드 로빈
     }
 
 }
