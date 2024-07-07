@@ -19,7 +19,7 @@ public class TicketMapping extends BaseTimeEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne(cascade = ALL, fetch = LAZY)
     private TicketHandler handlerId;
 
