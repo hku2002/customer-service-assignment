@@ -2,6 +2,7 @@ package com.connie.customer.domain.entity;
 
 import com.connie.customer.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,10 +22,24 @@ public class TicketMapping extends BaseTimeEntity {
 
     @JoinColumn(nullable = false)
     @ManyToOne(cascade = ALL, fetch = LAZY)
-    private TicketHandler handlerId;
+    private TicketHandler handler;
 
     @PrimaryKeyJoinColumn
     @OneToOne(cascade = ALL, fetch = LAZY)
-    private Ticket ticketId;
+    private Ticket ticket;
+
+    @Builder
+    public TicketMapping(Long id, TicketHandler handler, Ticket ticket) {
+        this.id = id;
+        this.handler = handler;
+        this.ticket = ticket;
+    }
+
+    public static TicketMapping of(TicketHandler ticketHandler, Ticket ticket) {
+        return TicketMapping.builder()
+                .handler(ticketHandler)
+                .ticket(ticket)
+                .build();
+    }
 
 }
