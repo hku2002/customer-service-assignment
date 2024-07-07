@@ -15,7 +15,7 @@ public class TicketService {
 
     @Transactional
     public void createTicket(CreateTicketRequest request) {
-        Ticket ticket = ticketRepository.save(Ticket.from(request));
+        ticketRepository.save(Ticket.from(request));
     }
 
 }
