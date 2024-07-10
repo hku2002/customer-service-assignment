@@ -45,6 +45,12 @@ public class TicketService {
         ticket.modifyContents(request.contents());
     }
 
+    @Transactional
+    public void deleteTicket(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow();
+        ticketRepository.delete(ticket);
+    }
+
     private void assignmentTicket(Ticket ticket) {
         if (PROBLEM_INQUIRY.equals(ticket.getType())) {
             TicketHandler minTicketHandler = ticketHandlerRepository.findFirstHandlerHasMinTicket();
