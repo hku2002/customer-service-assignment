@@ -1,6 +1,7 @@
 package com.connie.customer.application;
 
 import com.connie.customer.api.dto.CreateTicketRequest;
+import com.connie.customer.api.dto.ModifyTicketRequest;
 import com.connie.customer.application.Factory.TicketTypeFactory;
 import com.connie.customer.application.strategy.TicketTypeStrategy;
 import com.connie.customer.domain.entity.Ticket;
@@ -35,6 +36,13 @@ public class TicketService {
         ticketTypeStrategy.checkTypeField(request);
         Ticket ticket = ticketRepository.save(Ticket.from(request));
         assignmentTicket(ticket);
+    }
+
+    @Transactional
+    public void modifyTicket(ModifyTicketRequest request) {
+        Ticket ticket = ticketRepository.findById(request.ticketId()).orElseThrow();
+        ticket.modifyTitle(request.title());
+        ticket.modifyContents(request.contents());
     }
 
     private void assignmentTicket(Ticket ticket) {

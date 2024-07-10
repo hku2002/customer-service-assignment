@@ -84,4 +84,12 @@ public class Ticket extends BaseTimeEntity {
                 && request.email() != null;
     }
 
+    public void modifyTitle(String title) {
+        this.title = title;
+    }
+
+    public void modifyContents(String contents) {
+        this.contents = contents;
+    }
+
 }
