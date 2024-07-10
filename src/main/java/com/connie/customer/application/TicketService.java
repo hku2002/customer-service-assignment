@@ -4,6 +4,7 @@ import com.connie.customer.api.dto.request.CreateTicketRequest;
 import com.connie.customer.api.dto.request.ModifyTicketRequest;
 import com.connie.customer.api.dto.response.TicketResponse;
 import com.connie.customer.application.Factory.TicketTypeFactory;
+import com.connie.customer.application.messagequeue.LocalMessageQueue;
 import com.connie.customer.application.strategy.TicketTypeStrategy;
 import com.connie.customer.domain.entity.Ticket;
 import com.connie.customer.domain.entity.TicketHandler;
@@ -14,6 +15,7 @@ import com.connie.customer.domain.repository.TicketHandlerRepository;
 import com.connie.customer.domain.repository.TicketMappingRepository;
 import com.connie.customer.domain.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,8 @@ public class TicketService {
     private final TicketMappingRepository ticketMappingRepository;
     private final TicketHandlerIndexRepository ticketHandlerIndexRepository;
     private final TicketTypeFactory ticketTypeFactory;
+    private final LocalMessageQueue<CreateTicketRequest> localMessageQueue;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public TicketResponse getTicket(Long ticketId) {
@@ -48,8 +52,10 @@ public class TicketService {
     public void createTicket(CreateTicketRequest request) {
         TicketTypeStrategy ticketTypeStrategy = ticketTypeFactory.findStrategy(request.type());
         ticketTypeStrategy.checkTypeField(request);
-        Ticket ticket = ticketRepository.save(Ticket.from(request));
-        assignmentTicket(ticket);
+        boolean isPublish = localMessageQueue.add(request);
+        if (!isPublish) {
+            throw new IllegalStateException();
+        }
     }
 
     @Transactional
@@ -65,7 +71,7 @@ public class TicketService {
         ticketRepository.delete(ticket);
     }
 
-    private void assignmentTicket(Ticket ticket) {
+    public void assignmentTicket(Ticket ticket) {
         if (PROBLEM_INQUIRY.equals(ticket.getType())) {
             TicketHandler minTicketHandler = ticketHandlerRepository.findFirstHandlerHasMinTicket();
             ticketMappingRepository.save(TicketMapping.of(minTicketHandler, ticket));

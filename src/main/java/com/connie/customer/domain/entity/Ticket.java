@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 import static com.connie.customer.domain.enums.TicketStatus.CREATED;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -70,6 +72,12 @@ public class Ticket extends BaseTimeEntity {
                 .type(request.type())
                 .status(CREATED)
                 .build();
+    }
+
+    public static List<Ticket> from(List<CreateTicketRequest> requests) {
+        return requests.stream()
+                .map(Ticket::from)
+                .toList();
     }
 
     private static void checkType(CreateTicketRequest request) {
