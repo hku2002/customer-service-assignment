@@ -1,4 +1,4 @@
-package com.connie.customer.api.dto;
+package com.connie.customer.api.dto.request;
 
 import com.connie.customer.domain.enums.TicketType;
 

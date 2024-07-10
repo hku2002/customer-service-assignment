@@ -1,7 +1,7 @@
 package com.connie.customer.application;
 
-import com.connie.customer.api.dto.CreateTicketRequest;
-import com.connie.customer.api.dto.ModifyTicketRequest;
+import com.connie.customer.api.dto.request.CreateTicketRequest;
+import com.connie.customer.api.dto.request.ModifyTicketRequest;
 import com.connie.customer.application.Factory.TicketTypeFactory;
 import com.connie.customer.application.strategy.TicketTypeStrategy;
 import com.connie.customer.domain.entity.Ticket;

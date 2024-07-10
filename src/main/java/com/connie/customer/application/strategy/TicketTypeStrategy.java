@@ -1,6 +1,6 @@
 package com.connie.customer.application.strategy;
 
-import com.connie.customer.api.dto.CreateTicketRequest;
+import com.connie.customer.api.dto.request.CreateTicketRequest;
 import com.connie.customer.domain.enums.TicketType;
 
 public interface TicketTypeStrategy {

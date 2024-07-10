@@ -1,6 +1,6 @@
 package com.connie.customer.domain.entity;
 
-import com.connie.customer.api.dto.CreateTicketRequest;
+import com.connie.customer.api.dto.request.CreateTicketRequest;
 import com.connie.customer.common.entity.BaseTimeEntity;
 import com.connie.customer.domain.enums.TicketStatus;
 import com.connie.customer.domain.enums.TicketType;

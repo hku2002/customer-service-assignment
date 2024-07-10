@@ -1,4 +1,4 @@
-package com.connie.customer.api.dto;
+package com.connie.customer.api.dto.request;
 
 public record ModifyTicketRequest(
 
