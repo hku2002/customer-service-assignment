@@ -2,6 +2,7 @@ package com.connie.customer.application;
 
 import com.connie.customer.api.dto.request.CreateTicketRequest;
 import com.connie.customer.api.dto.request.ModifyTicketRequest;
+import com.connie.customer.api.dto.response.TicketResponse;
 import com.connie.customer.application.Factory.TicketTypeFactory;
 import com.connie.customer.application.strategy.TicketTypeStrategy;
 import com.connie.customer.domain.entity.Ticket;
@@ -13,6 +14,7 @@ import com.connie.customer.domain.repository.TicketHandlerRepository;
 import com.connie.customer.domain.repository.TicketMappingRepository;
 import com.connie.customer.domain.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,18 @@ public class TicketService {
     private final TicketMappingRepository ticketMappingRepository;
     private final TicketHandlerIndexRepository ticketHandlerIndexRepository;
     private final TicketTypeFactory ticketTypeFactory;
+
+    @Transactional(readOnly = true)
+    public TicketResponse getTicket(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow();
+        return TicketResponse.from(ticket);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketResponse> getTicketsByUserId(Long userId, int page, int size) {
+        List<Ticket> tickets = ticketRepository.findAllByUserId(userId, PageRequest.of(page, size));
+        return TicketResponse.from(tickets);
+    }
 
     @Transactional
     public void createTicket(CreateTicketRequest request) {
