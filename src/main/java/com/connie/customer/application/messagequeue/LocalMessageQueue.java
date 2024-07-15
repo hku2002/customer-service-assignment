@@ -22,4 +22,8 @@ public class LocalMessageQueue<T> {
         return queue.poll();
     }
 
+    public int size() {
+        return queue.size();
+    }
+
 }
