@@ -2,7 +2,6 @@ package com.connie.customer.scheduler;
 
 import com.connie.customer.api.dto.request.CreateTicketRequest;
 import com.connie.customer.application.TicketService;
-import com.connie.customer.application.dto.LocalMessageQueueDto;
 import com.connie.customer.application.messagequeue.LocalMessageQueue;
 import com.connie.customer.domain.entity.Ticket;
 import com.connie.customer.domain.repository.TicketRepository;
@@ -40,12 +39,7 @@ public class TicketJob {
         }
 
         IntStream.range(1, max)
-                .forEach(data -> {
-                    LocalMessageQueueDto<CreateTicketRequest> queue = localMessageQueue.poll();
-                    if (queue != null) {
-                        requests.add(queue.message());
-                    }
-                });
+                .forEach(data -> requests.add(localMessageQueue.poll().message()));
 
         List<Ticket> tickets = ticketRepository.saveAll(Ticket.from(requests));
         tickets.forEach(ticketService::assignmentTicket);
