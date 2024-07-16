@@ -15,7 +15,7 @@ public class GeneralTypeStrategy implements TicketTypeStrategy {
 
     @Override
     public void checkTypeField(CreateTicketRequest request) {
-        if (GENERAL_INQUIRY.equals(request.type())) {
+        if (!GENERAL_INQUIRY.equals(request.type())) {
             throw new IllegalArgumentException("일반 문의 타입이 아닙니다.");
         }
         if (request.userId() != null) {
