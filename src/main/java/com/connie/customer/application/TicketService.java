@@ -47,13 +47,10 @@ public class TicketService {
     }
 
     @Transactional
-    public void createTicket(CreateTicketRequest request) {
+    public boolean createTicket(CreateTicketRequest request) {
         TicketTypeStrategy ticketTypeStrategy = ticketTypeFactory.findStrategy(request.type());
         ticketTypeStrategy.checkTypeField(request);
-        boolean isPublish = localMessageQueue.add(request);
-        if (!isPublish) {
-            throw new IllegalStateException();
-        }
+        return localMessageQueue.add(request);
     }
 
     @Transactional
