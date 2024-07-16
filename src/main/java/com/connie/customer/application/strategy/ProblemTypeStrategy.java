@@ -19,7 +19,7 @@ public class ProblemTypeStrategy implements TicketTypeStrategy {
         if (!PROBLEM_INQUIRY.equals(request.type())) {
             throw new IllegalArgumentException("문제점 문의 타입이 아닙니다.");
         }
-        if (StringUtils.hasText(request.phoneNumber()) && request.userId() != null) {
+        if (!StringUtils.hasText(request.phoneNumber()) && request.userId() == null) {
             throw new IllegalArgumentException("문제점 문의 타입의 필수값이 없습니다.");
         }
     }

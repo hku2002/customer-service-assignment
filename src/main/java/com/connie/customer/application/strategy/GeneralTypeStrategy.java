@@ -18,7 +18,7 @@ public class GeneralTypeStrategy implements TicketTypeStrategy {
         if (!GENERAL_INQUIRY.equals(request.type())) {
             throw new IllegalArgumentException("일반 문의 타입이 아닙니다.");
         }
-        if (request.userId() != null) {
+        if (request.userId() == null) {
             throw new IllegalArgumentException("일반 문의 타입의 필수값이 없습니다.");
         }
     }
