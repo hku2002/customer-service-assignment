@@ -20,6 +20,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -91,12 +95,30 @@ class TicketServiceTest {
 
         @Test
         @DisplayName("다른 스레드로 발행되어도 올바르게 소비된다.")
-        void differenceThreadTest() {
+        void differenceThreadTest() throws InterruptedException {
             // given
+            CreateTicketRequest request = fixtureMonkey.giveMeBuilder(CreateTicketRequest.class)
+                    .set("phoneNumber", "01012341234")
+                    .sample();
+            TicketHandler ticketHandler = TicketHandler.builder().id(1L).name("담당자1").build();
+            TicketHandlerIndex ticketHandlerIndex = TicketHandlerIndex.builder().id(1L).handler(ticketHandler).build();
+            ticketHandlerRepository.save(ticketHandler);
+            ticketHandlerIndexRepository.save(ticketHandlerIndex);
+            final int threadCount = 3;
+            ExecutorService executorService = Executors.newFixedThreadPool(3);
 
             // when
+            IntStream.range(0, threadCount)
+                    .forEach(data -> executorService.submit(() -> ticketService.createTicket(request)));
+            executorService.shutdown();
+            boolean result = executorService.awaitTermination(1, TimeUnit.MINUTES);
+            if (result) {
+                ticketJob.ticketPopJob();
+            }
 
             // then
+            LocalMessageQueue<CreateTicketRequest> bean = applicationContext.getBean(LocalMessageQueue.class);
+            assertThat(bean.size()).isEqualTo(0L);
         }
 
 
