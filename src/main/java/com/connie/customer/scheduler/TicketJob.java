@@ -38,7 +38,7 @@ public class TicketJob {
             max = queueSize;
         }
 
-        IntStream.range(1, max)
+        IntStream.range(0, max)
                 .forEach(data -> requests.add(localMessageQueue.poll().message()));
 
         List<Ticket> tickets = ticketRepository.saveAll(Ticket.from(requests));
